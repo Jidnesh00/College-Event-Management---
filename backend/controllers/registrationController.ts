@@ -27,7 +27,9 @@ export async function registerForEvent(req: AuthenticatedRequest, res: Response)
     const studentId = req.user.id;
 
     // 1. Check if event exists and is approved
+    console.log('[Registration] Checking event:', event_id);
     const eventRows = await query('SELECT * FROM events WHERE id = ?', [event_id]);
+    console.log('[Registration] Event lookup completed:', eventRows.length);
     if (eventRows.length === 0) {
       return res.status(404).json({ success: false, message: 'Event not found.' });
     }
@@ -109,10 +111,12 @@ export async function registerForEvent(req: AuthenticatedRequest, res: Response)
     }
 
     // 5. Insert registration
+    console.log('[Registration] Inserting registration');
     const insertResult = await execute(
       "INSERT INTO registrations (student_id, event_id, status, attendance_status) VALUES (?, ?, 'confirmed', 'unmarked')",
       [studentId, event_id]
     );
+    console.log('[Registration] Insert completed:', insertResult.insertId);
 
     // Real-time notification for student
     const dateText = event.date_tbd ? 'Date TBD' : (event.date || 'TBD');
