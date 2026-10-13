@@ -13,12 +13,15 @@ import {
   StudentProfile,
 } from '../types';
 
+
 const api = axios.create({
   baseURL: '/api',
+  timeout: 20000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
 
 // Automatically inject JWT Bearer Token if present
 api.interceptors.request.use((config) => {
